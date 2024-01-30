@@ -20,6 +20,8 @@ class Player(pygame.sprite.Sprite):
         self.hitbox_rect = self.base_player_image.get_rect(center=self.pos)
         self.rect = self.hitbox_rect.copy()
         self.speed = PLAYER_SPEED
+        self.shoot = False
+        self.shoot_cooldown = 0
 
     def player_rotation(self):
         self.mouse_coords = pygame.mouse.get_pos()
@@ -48,6 +50,15 @@ class Player(pygame.sprite.Sprite):
             self.velocity_x /= math.sqrt(2)
             self.velocity_y /= math.sqrt(2)
 
+        if pygame.mouse.get_pressed() == (1, 0, 0) or keys[pygame.K_SPACE]:
+            self.shoot = True
+            self.is_shooting()
+        else:
+            self.shoot = True
+
+    def is_shooting(self):
+        if self.shoot_cooldown == 0:
+            self.shoot_cooldown = SHOOT_COOLDOWN
 
     def move(self):
         self.pos += pygame.math.Vector2(self.velocity_x, self.velocity_y)
@@ -58,6 +69,9 @@ class Player(pygame.sprite.Sprite):
         self.user_input()
         self.move()
         self.player_rotation()
+
+        if self.shoot_cooldown > 0:
+            self.shoot_cooldown -= 1
 
 player = Player()
 

@@ -12,3 +12,6 @@ PLAYER_SIZE = 0.25
 
 # player speed
 PLAYER_SPEED = 6
+
+# cannon firing cooldown
+SHOOT_COOLDOWN = 20
