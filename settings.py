@@ -15,3 +15,7 @@ PLAYER_SPEED = 6
 
 # cannon firing cooldown
 SHOOT_COOLDOWN = 20
+
+# cannon ball setup
+CANNONBALL_SCALE = 2
+CANNONBALL_SPEED = 5

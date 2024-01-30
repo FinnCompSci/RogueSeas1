@@ -59,6 +59,10 @@ class Player(pygame.sprite.Sprite):
     def is_shooting(self):
         if self.shoot_cooldown == 0:
             self.shoot_cooldown = SHOOT_COOLDOWN
+            spawn_cannonball_pos = self.pos
+            self.cannonball = Cannonball(spawn_cannonball_pos[0], spawn_cannonball_pos[1], self.angle)
+            cannonball_group.add(self.cannonball)
+            all_sprites_group.add(self.cannonball)
 
     def move(self):
         self.pos += pygame.math.Vector2(self.velocity_x, self.velocity_y)
@@ -73,7 +77,37 @@ class Player(pygame.sprite.Sprite):
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
 
+class Cannonball(pygame.sprite.Sprite):
+    def __init__(self, x, y, angle):
+        super().__init__()
+        self.image = pygame.image.load("CannonBall.png").convert_alpha()
+        self.image = pygame.transform.rotozoom(self.image, 0, CANNONBALL_SCALE)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.x = x
+        self.y = y
+        self.angle = angle
+        self.speed = CANNONBALL_SPEED
+        self.x_vel = math.cos(self.angle * (2*math.pi/360)) * self.speed
+        self.y_vel = math.sin(self.angle * (2*math.pi/360)) * self.speed
+
+    def cannonball_movement(self):
+        self.x += self.x_vel
+        self.y += self.y_vel
+
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+
+    def update(self):
+        self.cannonball_movement()
+
 player = Player()
+
+all_sprites_group = pygame.sprite.Group()
+cannonball_group = pygame.sprite.Group()
+
+all_sprites_group.add(player)
+
 
 while True:
     keys = pygame.key.get_pressed()
@@ -83,10 +117,12 @@ while True:
             exit()
 
     screen.blit(background, (0, 0))
-    screen.blit(player.image, player.rect)
-    player.update()
-    pygame.draw.rect(screen, "red", player.hitbox_rect, width=2)
-    pygame.draw.rect(screen, "yellow", player.rect, width=2)
+    all_sprites_group.draw(screen)
+    all_sprites_group.update()
+    # screen.blit(player.image, player.rect)
+    # player.update()
+    # pygame.draw.rect(screen, "red", player.hitbox_rect, width=2)
+    # pygame.draw.rect(screen, "yellow", player.rect, width=2)
 
     pygame.display.update()
     clock.tick(FPS)
