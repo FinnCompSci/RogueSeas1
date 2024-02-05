@@ -9,7 +9,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Rogue Seas")
 clock = pygame.time.Clock()
 
-background = pygame.transform.scale(pygame.image.load("BackgroundWater.png").convert(), (WIDTH, HEIGHT))
+background = pygame.image.load("BackgroundWater.png").convert()
+
+#  background = pygame.transform.scale(pygame.image.load("BackgroundWater.png").convert(), (WIDTH, HEIGHT))
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -90,6 +92,8 @@ class Cannonball(pygame.sprite.Sprite):
         self.speed = CANNONBALL_SPEED
         self.x_vel = math.cos(self.angle * (2*math.pi/360)) * self.speed
         self.y_vel = math.sin(self.angle * (2*math.pi/360)) * self.speed
+        self.cannonball_duration = CANNONBALL_DURATION
+        self.spawn_time = pygame.time.get_ticks()  # Gets the time that the cannonball was created
 
     def cannonball_movement(self):
         self.x += self.x_vel
@@ -98,9 +102,32 @@ class Cannonball(pygame.sprite.Sprite):
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
 
+        if pygame.time.get_ticks() - self.spawn_time > self.cannonball_duration:
+            self.kill()
+
     def update(self):
         self.cannonball_movement()
 
+class Camera(pygame.sprite.Group):
+    def __init__(self):
+        super().__init__()
+        self.offset = pygame.math.Vector2()
+        self.floor_rect = background.get_rect(topleft = (0, 0))
+
+    def custom_draw(self):
+        self.offset.x = player.rect.centerx - WIDTH // 2
+        self.offset.y = player.rect.centery - HEIGHT // 2
+
+        # Draws the floor
+
+        floor_offset_pos = self.floor_rect.topleft - self.offset
+        screen.blit(background, floor_offset_pos)
+
+        for sprite in all_sprites_group:
+            offset_pos = sprite.rect.topleft - self.offset
+            screen.blit(sprite.image, offset_pos)
+
+camera = Camera()
 player = Player()
 
 all_sprites_group = pygame.sprite.Group()
