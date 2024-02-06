@@ -9,7 +9,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Rogue Seas")
 clock = pygame.time.Clock()
 
-background = pygame.image.load("BackgroundWater.png").convert()
+background = pygame.image.load("BackgroundWater2.png").convert()
 
 #  background = pygame.transform.scale(pygame.image.load("BackgroundWater.png").convert(), (WIDTH, HEIGHT))
 
@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = PLAYER_SPEED
         self.shoot = False
         self.shoot_cooldown = 0
+        self.cannon_barrel_offset = pygame.math.Vector2(CANNON_OFFSET_X, CANNON_OFFSET_Y)
 
     def player_rotation(self):
         self.mouse_coords = pygame.mouse.get_pos()
@@ -61,7 +62,7 @@ class Player(pygame.sprite.Sprite):
     def is_shooting(self):
         if self.shoot_cooldown == 0:
             self.shoot_cooldown = SHOOT_COOLDOWN
-            spawn_cannonball_pos = self.pos
+            spawn_cannonball_pos = self.pos + self.cannon_barrel_offset.rotate(self.angle)
             self.cannonball = Cannonball(spawn_cannonball_pos[0], spawn_cannonball_pos[1], self.angle)
             cannonball_group.add(self.cannonball)
             all_sprites_group.add(self.cannonball)
@@ -112,14 +113,13 @@ class Camera(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.offset = pygame.math.Vector2()
-        self.floor_rect = background.get_rect(topleft = (0, 0))
+        self.floor_rect = background.get_rect(topleft=(0, 0))
 
     def custom_draw(self):
         self.offset.x = player.rect.centerx - WIDTH // 2
         self.offset.y = player.rect.centery - HEIGHT // 2
 
         # Draws the floor
-
         floor_offset_pos = self.floor_rect.topleft - self.offset
         screen.blit(background, floor_offset_pos)
 
@@ -144,6 +144,7 @@ while True:
             exit()
 
     screen.blit(background, (0, 0))
+
     all_sprites_group.draw(screen)
     all_sprites_group.update()
     # screen.blit(player.image, player.rect)
