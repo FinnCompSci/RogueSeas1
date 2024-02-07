@@ -28,8 +28,8 @@ class Player(pygame.sprite.Sprite):
 
     def player_rotation(self):
         self.mouse_coords = pygame.mouse.get_pos()
-        self.x_change_mouse_player = (self.mouse_coords[0] - self.hitbox_rect.centerx)
-        self.y_change_mouse_player = (self.mouse_coords[1] - self.hitbox_rect.centery)
+        self.x_change_mouse_player = (self.mouse_coords[0] - WIDTH // 2)
+        self.y_change_mouse_player = (self.mouse_coords[1] - HEIGHT // 2)
         self.angle = math.degrees(math.atan2(self.y_change_mouse_player, self.x_change_mouse_player))
         self.image = pygame.transform.rotate(self.base_player_image, (-self.angle))
         self.rect = self.image.get_rect(center=self.hitbox_rect.center)
@@ -109,6 +109,10 @@ class Cannonball(pygame.sprite.Sprite):
     def update(self):
         self.cannonball_movement()
 
+class Enemy(pygame.sprite.Group):
+    def __init__(self, position):
+        super().__init__(enemy_group, all_sprites_group)
+
 class Camera(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
@@ -127,11 +131,12 @@ class Camera(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             screen.blit(sprite.image, offset_pos)
 
-camera = Camera()
-player = Player()
-
 all_sprites_group = pygame.sprite.Group()
 cannonball_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
+
+camera = Camera()
+player = Player()
 
 all_sprites_group.add(player)
 
@@ -145,8 +150,10 @@ while True:
 
     screen.blit(background, (0, 0))
 
-    all_sprites_group.draw(screen)
+    camera.custom_draw()
     all_sprites_group.update()
+
+    # all_sprites_group.draw(screen)
     # screen.blit(player.image, player.rect)
     # player.update()
     # pygame.draw.rect(screen, "red", player.hitbox_rect, width=2)
