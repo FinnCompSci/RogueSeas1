@@ -9,7 +9,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Rogue Seas")
 clock = pygame.time.Clock()
 
-background = pygame.image.load("BackgroundWater2.png").convert()
+background = (pygame.image.load("BackgroundWater2.png").convert())
+
+# pygame.image.load("BackgroundWater2.png").convert())
 
 #  background = pygame.transform.scale(pygame.image.load("BackgroundWater.png").convert(), (WIDTH, HEIGHT))
 
