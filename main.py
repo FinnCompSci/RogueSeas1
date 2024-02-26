@@ -1,3 +1,4 @@
+"""
 import pygame
 from sys import exit
 import math
@@ -198,3 +199,4 @@ while True:
 
     pygame.display.update()
     clock.tick(FPS)
+"""

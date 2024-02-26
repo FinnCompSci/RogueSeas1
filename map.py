@@ -1,4 +1,4 @@
-'''
+
 import numpy
 import pygame
 import time
@@ -73,9 +73,8 @@ def main():
         if running:
             cells = update(screen, cells, size, with_progress=True)
             pygame.display.update()
-        time.sleep(0.5)
+        time.sleep(0.2)
 
 
 if __name__ == "__main__":
     main()
-'''
