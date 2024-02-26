@@ -39,8 +39,8 @@ def main():
     # set size of cells
     size = 10
 
-    # set dimension of cells and their initial configuration
-    cells = numpy.random.choice(2, size=(60, 80), p=[0.38, 0.62])
+    # set dimension of cells and their initial configuration, changing size changes the number of pixels size of the map
+    cells = numpy.random.choice(2, size=(60, 90), p=[0.38, 0.62])
     cells[0:60, 0] = 1
     cells[0, 0:80] = 1
     cells[0:60, 79] = 1
